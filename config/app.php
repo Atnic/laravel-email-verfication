@@ -171,11 +171,11 @@ return [
         /*
          * Application Service Providers...
          */
-        App\Providers\AppServiceProvider::class,
-        App\Providers\AuthServiceProvider::class,
-        // App\Providers\BroadcastServiceProvider::class,
-        App\Providers\EventServiceProvider::class,
-        App\Providers\RouteServiceProvider::class,
+        Atnic\EmailVerification\Providers\AppServiceProvider::class,
+        Atnic\EmailVerification\Providers\AuthServiceProvider::class,
+        // Atnic\EmailVerification\Providers\BroadcastServiceProvider::class,
+        Atnic\EmailVerification\Providers\EventServiceProvider::class,
+        Atnic\EmailVerification\Providers\RouteServiceProvider::class,
 
     ],
 
