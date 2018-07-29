@@ -1,0 +1,11 @@
+@component('mail::message')
+# {{ title_case(__('email-verification::verify_email.singular')) }}
+
+{{ __('email-verification::verify_email.email_body') }}
+
+@component('mail::button', ['url' => $url])
+{{ title_case(__('email-verification::verify_email.singular')) }}
+@endcomponent
+
+{{ config('app.name') }}
+@endcomponent

@@ -1,0 +1,75 @@
+<?php
+
+namespace {{namespace}}Http\Controllers\Auth;
+
+use Carbon\Carbon;
+use {{namespace}}User;
+use Atnic\EmailVerification\Notifications\EmailVerification;
+use {{namespace}}Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
+
+/**
+ * VerifyEmailController
+ */
+class VerifyEmailController extends Controller
+{
+    /**
+     * Invoke single action controller.
+     *
+     * @param string $crypto
+     * @return \Illuminate\Http\Response
+     */
+    public function __invoke(string $crypto)
+    {
+        $decrypt = decrypt($crypto);
+        $validator = Validator::make((array) $decrypt, [
+            'email' => 'required|email|exists:users,email',
+            'expired' => 'required|after:now'
+        ], [
+            'expired.after' => __('email-verification::verify_email.expired')
+        ]);
+        if ($validator->fails()) {
+            return response()->redirectToRoute('verify_email.resend', [ 'email' => $decrypt->email ])
+                ->with('status', $validator->messages()->first())->with('status-type', 'danger');
+        }
+
+        $user = User::where('email', $decrypt->email)->firstOrFail();
+        if (!$user->email_verified) {
+            $user->email_verified = true;
+            $user->save();
+        }
+        auth()->login($user);
+        return response()->redirectToIntended(route('home'));
+    }
+
+    /**
+     * Show the application's resend email verfication link form.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function showResendForm()
+    {
+        return view('auth.verify_email.resend');
+    }
+
+    /**
+     * Handle a resend email verification link request to the application.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\Response|\Illuminate\Http\JsonResponse
+     */
+    public function resend(Request $request)
+    {
+        $request->validate([
+            'email' => [ 'required', 'email', Rule::exists('users')->where(function ($query) {
+                $query->whereNull('email_verified')->orWhere('email_verified', false);
+            }) ],
+        ]);
+        $user = User::where('email', $request->email)->first();
+        $user->notify(new EmailVerification($user->generateEmailVerificationUrl()));
+
+        return response()->redirectToRoute('verify_email.resend')->with('status', __('email-verification::verify_email.link_sent'));
+    }
+}
