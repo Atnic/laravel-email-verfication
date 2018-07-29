@@ -8,7 +8,7 @@ But before that make sure you already config you `.env` especially for `MAIL_*` 
 
 Okay, then this is the step to install Laravel Email Verification:
 
-1. Install this package
+- Install this package
 ```bash
 composer require atnic/laravel-email-verification
 ```
@@ -77,7 +77,7 @@ class RegisterController extends Controller
 
 ## Advance Usage
 
-In `User` model you can add `$emailVerificationTimeout` using integer value that define how much time in minutes user can logged in even when their email is unverified yet. You can notify them that their email is not verified and can click this link to resend email verfication. `route('verify_email', [ 'email' => 'some_email' ])`. The default is 0, so user can't be login if email is not verified.
+In `User` model you can add `$emailVerificationTimeout` using integer value that define how much time in minutes user can logged in even when their email is unverified yet. You can notify them that their email is not verified and can click this link to resend email verfication. `route('verify_email.resend', [ 'email' => 'some_email' ])`. The default is 0, so user can't be login if email is not verified.
 
 ## Security Vulnerabilities
 
