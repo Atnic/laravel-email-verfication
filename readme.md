@@ -75,6 +75,10 @@ class RegisterController extends Controller
 
 - Done!
 
+## Advance Usage
+
+In `User` model you can add `$emailVerificationTimeout` using integer value that define how much time in minutes user can logged in even when their email is unverified yet. You can notify them that their email is not verified and can click this link to resend email verfication. `route('verify_email', [ 'email' => 'some_email' ])`. The default is 0, so user can't be login if email is not verified.
+
 ## Security Vulnerabilities
 
 If you discover a security vulnerability within Laravel Email Verification, please send an e-mail to Farid Inawan via [frdteknikelektro@gmail.com](mailto:frdteknikelektro@gmail.com). All security vulnerabilities will be promptly addressed.
